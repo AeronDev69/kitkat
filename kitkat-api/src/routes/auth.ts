@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {User} from "../models";
 import passport from "passport";
+import { hashPassword } from "../util/helper";
+import {UserData} from "../models/index";
 
 const router = Router();
 
@@ -20,15 +22,17 @@ router.get("/api/auth/logout", (req, res) =>{
 });
 
 router.post("/api/auth/login", passport.authenticate("local") ,(req, res) => {
-    res.send('authoorized')
+    res.send(req.user)
 })
 
 router.post('/api/auth/signup', async (req, res) => {
     try {
         const newUser = new User({
             username: req.body.username,
-            password: req.body.password
+            password: hashPassword(req.body.password)
         })
+        const newUserData = new UserData({user_id: newUser.id})
+        await newUserData.save();
         await newUser.save();
         res.send("user created!")
     } catch (err) {

@@ -1,3 +1,4 @@
 import {User} from './User'
+import UserData from './UserData'
 
-export { User}
+export { User, UserData}

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
 const models_1 = require("../models");
+const helper_1 = require("../util/helper");
 passport_1.default.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -36,7 +37,7 @@ exports.default = passport_1.default.use(new passport_local_1.Strategy((username
         const findUser = yield models_1.User.findOne({ username });
         if (!findUser)
             throw new Error("User not found");
-        if (password !== findUser.password)
+        if (!(0, helper_1.comparePassword)(password, findUser.password))
             throw new Error("Bad Credentials");
         done(null, findUser);
     }

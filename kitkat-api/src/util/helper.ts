@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import mongoose, { mongo } from "mongoose";
 
 const saltRounds = 10;
 
@@ -7,5 +8,5 @@ export const hashPassword = (password:string) => {
 	return bcrypt.hashSync(password, salt);
 };
 
-export const comparePassword = (plain:string, hashed:string) =>
+export const comparePassword = (plain:string, hashed: string) =>
 	bcrypt.compareSync(plain, hashed);

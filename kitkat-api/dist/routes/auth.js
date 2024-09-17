@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const models_1 = require("../models");
 const passport_1 = __importDefault(require("passport"));
+const helper_1 = require("../util/helper");
+const index_1 = require("../models/index");
 const router = (0, express_1.Router)();
 router.get("/api/auth/status", (req, res) => {
     if (req.user)
@@ -31,14 +33,16 @@ router.get("/api/auth/logout", (req, res) => {
     });
 });
 router.post("/api/auth/login", passport_1.default.authenticate("local"), (req, res) => {
-    res.send('authoorized');
+    res.send(req.user);
 });
 router.post('/api/auth/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newUser = new models_1.User({
             username: req.body.username,
-            password: req.body.password
+            password: (0, helper_1.hashPassword)(req.body.password)
         });
+        const newUserData = new index_1.UserData({ user_id: newUser.id });
+        yield newUserData.save();
         yield newUser.save();
         res.send("user created!");
     }

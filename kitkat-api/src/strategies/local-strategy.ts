@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { User } from "../models";
 import mongoose from "mongoose";
+import { comparePassword } from "../util/helper";
 
 passport.serializeUser((user: any, done) => {
 	done(null, user.id);
@@ -19,11 +20,11 @@ passport.deserializeUser(async (id, done) => {
 	}
 });
 
-export default passport.use(new Strategy(async (username, password: unknown, done) =>{
+export default passport.use(new Strategy(async (username, password, done) =>{
     try {
         const findUser = await User.findOne({username});
         if(!findUser) throw new Error("User not found");
-        if (password as mongoose.Schema.Types.String !== findUser.password)
+        if (!comparePassword(password, findUser.password as unknown as string))
 				throw new Error("Bad Credentials");
 		done(null, findUser);
         

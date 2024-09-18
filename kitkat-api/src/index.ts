@@ -6,6 +6,7 @@ import passport from 'passport'
 import session from "express-session"
 import "./strategies/local-strategy"
 import MongoStore from "connect-mongo"
+import cors from "cors"
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGODB_URI!)
@@ -13,6 +14,10 @@ mongoose.connect(process.env.MONGODB_URI!)
     .catch((err) => console.error(err))
 
 const app = express();
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(session({
@@ -29,4 +34,4 @@ app.use(passport.session());
 
 app.use(routes);
 
-app.listen(3000, () => console.log("Server Started!"))
+app.listen(5000, () => console.log("Server Started!"))

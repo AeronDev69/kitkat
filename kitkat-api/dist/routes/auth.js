@@ -32,8 +32,16 @@ router.get("/api/auth/logout", (req, res) => {
         console.error(err);
     });
 });
-router.post("/api/auth/login", passport_1.default.authenticate("local"), (req, res) => {
-    res.send(req.user);
+router.post("/api/auth", passport_1.default.authenticate("local"), (req, res) => {
+    res.status(200).send(req.user);
+});
+router.get("/api/auth", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.status(200).send("successfully login");
+    }
+    else {
+        res.status(401).send("not login yet");
+    }
 });
 router.post('/api/auth/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

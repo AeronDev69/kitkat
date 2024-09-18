@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {User} from "../models";
-import passport from "passport";
+import passport, { authenticate } from "passport";
 import { hashPassword } from "../util/helper";
 import {UserData} from "../models/index";
 
@@ -21,8 +21,17 @@ router.get("/api/auth/logout", (req, res) =>{
     })
 });
 
-router.post("/api/auth/login", passport.authenticate("local") ,(req, res) => {
-    res.send(req.user)
+router.post("/api/auth", passport.authenticate("local"), (req, res) => {
+  res.status(200).send(req.user)
+})
+
+
+router.get("/api/auth", (req, res) => {
+  if(req.isAuthenticated()){
+    res.status(200).send("successfully login");
+  } else {
+    res.status(401).send("not login yet");
+  }
 })
 
 router.post('/api/auth/signup', async (req, res) => {
